@@ -1,0 +1,14 @@
+.favorites {
+    h1 {
+        text-align: center;
+        font-size: 45px;
+    }
+
+    .favorites__episodes {
+        list-style: none;
+        margin-top: 4rem;
+        .episode {
+            border: 1px solid blue;
+        }
+    }
+}

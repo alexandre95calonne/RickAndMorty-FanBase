@@ -1,19 +1,23 @@
 import '../index.scss'
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 
-import Header from './views/global/header/Header'
+import { FavoritesProvider } from './store/FavoritesContext';
 
-import Home from './views/Home/Home'
+import Header from './views/global/header/Header';
 
-function App() {
+import Home from './views/Home/Home';
+import Favorites from './views/Favorites/Favorites';
+
+export default function App() {
   return (
-    <BrowserRouter>
-      <Header/>
-      <Routes>
-        <Route path='/' element={<Home />}></Route>
-      </Routes>
-    </BrowserRouter>
-  )
+    <FavoritesProvider>
+      <BrowserRouter>
+        <Header/>
+        <Routes>
+          <Route path='/' element={<Home />}></Route>
+          <Route path='/favorites' element={<Favorites />}></Route>
+        </Routes>
+      </BrowserRouter>
+    </FavoritesProvider>
+  );
 }
-
-export default App

@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react"
-import './style/Home.scss'
-import Card from "./components/card"
+import './Home.scss'
+import Card from "./components/Card"
 
 export default function Home() {
 
