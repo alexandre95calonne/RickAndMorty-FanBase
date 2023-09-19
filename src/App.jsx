@@ -1,12 +1,14 @@
 import '../index.scss'
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 
-import { FavoritesProvider } from './store/FavoritesContext';
+import { FavoritesProvider } from './Store/FavoritesContext';
 
-import Header from './views/global/header/Header';
+import Header from './Views/Global/Header/Header';
 
-import Home from './views/Home/Home';
-import Favorites from './views/Favorites/Favorites';
+import Home from './Views/Home/Home';
+import Favorites from './Views/Favorites/Favorites';
+import Stats from './Views/Stats/Stats';
+import Random from './Views/Random/Random';
 
 export default function App() {
   return (
@@ -16,6 +18,8 @@ export default function App() {
         <Routes>
           <Route path='/' element={<Home />}></Route>
           <Route path='/favorites' element={<Favorites />}></Route>
+          <Route path='/stats' element={<Stats />}></Route>
+          <Route path='/random' element={<Random />}></Route>
         </Routes>
       </BrowserRouter>
     </FavoritesProvider>

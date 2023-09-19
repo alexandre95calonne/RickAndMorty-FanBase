@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useEffect, useState } from "react";
-import { FavoritesContext } from '../../store/FavoritesContext';
+import { FavoritesContext } from '../../Store/FavoritesContext';
 import getEpisodes from '../../api/GetEpisodes/GetEpisodes';
 import './style/Favorites.scss';
 
@@ -9,26 +9,28 @@ export default function Favorites() {
     const [favoriteEpisodes, setFavoriteEpisodes] = useState([]);
 
     function toggleFavorite(episodeId) {
-        const newFavorites = favorites.includes(episodeId) ? 
-            favorites.filter(fav => fav !== episodeId) : 
+        const newFavorites = favorites.includes(episodeId) ?
+            favorites.filter(fav => fav !== episodeId) :
             [...favorites, episodeId];
-        
+
         setFavorites(newFavorites);
         localStorage.setItem('favorites', JSON.stringify(newFavorites));
     }
 
     useEffect(() => {
         if (favorites.length) {
-            getEpisodes().then(data => {
-                const allEpisodes = data.results;
+            getEpisodes().then(allEpisodes => {
                 const episodesInFavorites = allEpisodes.filter(episode => favorites.includes(episode.id));
                 setFavoriteEpisodes(episodesInFavorites);
             });
+        } else {
+            setFavoriteEpisodes([]);
         }
     }, [favorites]);
 
-    if (!favoriteEpisodes.length) {
-        return <div>No favorite episodes</div>;
+    if (favoriteEpisodes.length === 0) {
+        return <div
+         className='section__padding'><h2>No favorite episodes...</h2></div>;
     }
 
     return (

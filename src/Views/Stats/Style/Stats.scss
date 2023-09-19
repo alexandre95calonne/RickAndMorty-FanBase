@@ -1,0 +1,38 @@
+table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    margin-top: 4rem;
+
+    th, td {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    th {
+        background-color: #7abdc4;
+        color: white;
+        width: 300px;
+    }
+
+    .species {
+        text-align: left;
+    }
+
+    .count {
+        text-align: right;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #ddd;
+    }
+}
+
+p {
+    margin-top: 2rem;
+    text-align: center;
+}

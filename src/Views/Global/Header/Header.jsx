@@ -13,6 +13,15 @@ export default function Header() {
                 <nav>
                     <ul>
                         <li>
+                            <Link to={`/`}>Home</Link>
+                        </li>
+                        <li>
+                            <Link to={`/stats`}>Stats</Link>
+                        </li>
+                        <li>
+                            <Link to={`/random`}>Random Character</Link>
+                        </li>
+                        <li>
                             <Link to={`/favorites`}>Favorites</Link>
                         </li>
                     </ul>
