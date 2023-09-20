@@ -1,18 +1,65 @@
-.favorites {
-    h1 {
-        text-align: center;
-        font-size: 45px;
-    }
+h2 {
+    text-align: center;
+}
 
-    .favorites__episodes {
-        list-style: none;
+.cards {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    margin-top: 3rem;
+
+    .card {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        text-align: center;
+        width: 300px;
+        padding: 20px;
         margin-top: 4rem;
-        .episode {
-            border: 1px solid blue;
+        position: relative;
+        margin: 1.5rem;
+
+        .heart {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
         }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #FAF3E0;
+            background-color: #7abdc4;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 2rem;
+            bottom: 5px;
+        }
+
+        button:hover {
+            background-color: #68a0b4;
+        }
+
+        .cat {
+            text-decoration: underline;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
     }
 }
 
-h2 {
-    text-align: center;
+@media screen and (max-width: 800px) {
+    .cards {
+        .card {
+            margin-top: 2rem;
+            margin-bottom: 0;
+        }
+    }
 }

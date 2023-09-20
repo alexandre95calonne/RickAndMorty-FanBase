@@ -36,13 +36,15 @@ export default function Favorites() {
     return (
         <div className="favorites section__padding">
             <h1>Favorite Episodes</h1>
-            <ul className='favorites__episodes'>
+            <ul className='cards'>
                 {favoriteEpisodes.map(episode => (
-                    <li key={episode.id} className='episode'>
+                    <li key={episode.id} className="card">
                         <div className="heart" onClick={() => toggleFavorite(episode.id)}>
                             ❤️
                         </div>
-                        {episode.name}
+                        <div><p className="cat">Name</p> {episode.name}</div>
+                            <div><p className="cat">Release date</p> {episode.air_date}</div>
+                            <div><p className="cat">Episode</p> {episode.episode}</div>
                     </li>
                 ))}
             </ul>

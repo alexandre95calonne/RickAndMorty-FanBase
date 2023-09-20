@@ -25,7 +25,7 @@ function Random() {
     }
 
     return (
-        <div className="container">
+        <div className="random__container section__padding">
             <div className="card">
                 <h2>Random Character</h2>
                 <img src={randomCharacter.image} alt={randomCharacter.name} />

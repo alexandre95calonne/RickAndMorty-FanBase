@@ -3,3 +3,26 @@ h1 {
     font-size: 45px;
 }
 
+@media screen and (max-width: 870px) {
+        h1 {
+            font-size: 40px;
+        }
+}
+
+@media screen and (max-width: 790px) {
+    h1 {
+        font-size: 30px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    h1 {
+        font-size: 32px;
+    }
+}
+
+@media screen and (max-width: 330px) {
+    h1 {
+        font-size: 27px;
+    }
+}

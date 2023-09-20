@@ -70,7 +70,7 @@ function Stats() {
                 </tbody>
             </table>
 
-            <p>Number of characters derived from Rick and Morty: {rickAndMortyDerived}</p>
+            <p><i> Number of characters derived from Rick and Morty: {rickAndMortyDerived}</i></p>
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { FavoritesContext } from '../../../Store/FavoritesContext';
 import './style/Card.scss';
 
@@ -13,6 +13,22 @@ export default function Card() {
     const [selectedCharacters, setSelectedCharacters] = useState({});
     const [buttonText, setButtonText] = useState({});
     const [loading, setLoading] = useState(true);
+    const [selectedFilter, setSelectedFilter] = useState('All');
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupEpisodeId, setPopupEpisodeId] = useState(null);
+    const popupContentRef = useRef(null);
+
+
+    const handleFilterClick = (filter) => {
+        filterEpisodes(filter);
+        setSelectedFilter(filter);
+    }
+
+    const handleOutsideClick = (event) => {
+        if (popupContentRef.current && !popupContentRef.current.contains(event.target)) {
+            setShowPopup(false);
+        }
+    };
 
     function toggleFavorite(episodeId) {
         const newFavorites = favorites.includes(episodeId) ?
@@ -25,13 +41,15 @@ export default function Card() {
 
     function handleButtonClick(episodeId, characterUrls) {
         if (buttonText[episodeId] === "Hide Characters") {
-            setButtonText(prev => ({ ...prev, [episodeId]: "Show Characters" }));
             setSelectedCharacters(prev => ({ ...prev, [episodeId]: [] }));
+            setShowPopup(false);
+            setPopupEpisodeId(null);
         } else {
-            setButtonText(prev => ({ ...prev, [episodeId]: "Hide Characters" }));
             const characterPromises = characterUrls.map(url => fetch(url).then(res => res.json()));
             Promise.all(characterPromises)
                 .then(characters => setSelectedCharacters(prev => ({ ...prev, [episodeId]: characters })));
+            setShowPopup(true);
+            setPopupEpisodeId(episodeId);
         }
     }
 
@@ -63,7 +81,6 @@ export default function Card() {
                 setFilteredEpisodes(filtered.slice(start, end));
                 const initialButtonText = {};
                 filtered.forEach(episode => initialButtonText[episode.id] = "Show Characters");
-                setButtonText(initialButtonText);
                 setLoading(false);
             } catch (error) {
                 console.error('Une erreur est survenue :', error);
@@ -82,14 +99,17 @@ export default function Card() {
     );
 
     return (
-        <div className="card__container section__padding">
+        <div className="card__container">
             <div className="filter-container">
-                <button onClick={() => filterEpisodes('All')}>Tout</button>
-                <button onClick={() => filterEpisodes('S01')}>Saison 1</button>
-                <button onClick={() => filterEpisodes('S02')}>Saison 2</button>
-                <button onClick={() => filterEpisodes('S03')}>Saison 3</button>
-                <button onClick={() => filterEpisodes('S04')}>Saison 4</button>
-                <button onClick={() => filterEpisodes('S05')}>Saison 5</button>
+                {['All', 'S01', 'S02', 'S03', 'S04', 'S05'].map(filter => (
+                    <button
+                        key={filter}
+                        onClick={() => handleFilterClick(filter)}
+                        className={filter === selectedFilter ? 'selected' : ''}
+                    >
+                        {filter === 'All' ? 'All' : `Season : ${filter.slice(1)}`}
+                    </button>
+                ))}
             </div>
             <ul className="cards">
                 {filteredEpisodes.map((episode) => {
@@ -103,20 +123,26 @@ export default function Card() {
                             <div><p className="cat">Name</p> {episode.name}</div>
                             <div><p className="cat">Release date</p> {episode.air_date}</div>
                             <div><p className="cat">Episode</p> {episode.episode}</div>
-                            <button onClick={() => handleButtonClick(episode.id, episode.characters)}>{buttonText[episode.id]}</button>
-                            <div className="characters__container">
-                                <ul className="characters">
-                                    {selectedCharacters[episode.id]?.map((character) => (
-                                        <li key={character.id}>
-                                            <div>{character.name} ({character.gender}/{character.species})</div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            <button onClick={() => handleButtonClick(episode.id, episode.characters)}>Show characters</button>
                         </li>
                     );
                 })}
             </ul>
+            {showPopup && (
+                <div className="popup" onClick={handleOutsideClick}>
+                    <div className="popup-content" ref={popupContentRef}>
+                        <h2>Characters in : {filteredEpisodes.find(episode => episode.id === popupEpisodeId)?.name}</h2>
+                        <ul className="popup-characters">
+                            {selectedCharacters[popupEpisodeId]?.map((character) => (
+                                <li key={character.id}>
+                                    {character.name} ({character.gender}/{character.species})
+                                </li>
+                            ))}
+                        </ul>
+                        <button onClick={() => setShowPopup(false)}>Close</button>
+                    </div>
+                </div>
+            )}
             <div className="pagination">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
                     <button
