@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { FavoritesContext } from '../../../Store/FavoritesContext';
+import fetchAllEpisodes from "../../../api/GetEpisodes/GetEpisodes";
 import './style/Card.scss';
 
 const PAGE_SIZE = 20;
@@ -18,17 +19,28 @@ export default function Card() {
     const [popupEpisodeId, setPopupEpisodeId] = useState(null);
     const popupContentRef = useRef(null);
 
+    // function allow to know wich filter have been selected
 
     const handleFilterClick = (filter) => {
         filterEpisodes(filter);
         setSelectedFilter(filter);
     }
 
+    // function allow to know when user click outside of pop-up element 
+
     const handleOutsideClick = (event) => {
         if (popupContentRef.current && !popupContentRef.current.contains(event.target)) {
             setShowPopup(false);
         }
     };
+
+    // function allow to know how much pages we need. Math.ceil around to int up. If "All" pages will equal length allEpisodes otherwise it will equal length of the filter selected. Finally we divise by the number of episodes per page
+
+    const totalPages = Math.ceil(
+        (currentSeason === 'All' ? allEpisodes.length : filteredEpisodes.length) / PAGE_SIZE
+    );
+
+    
 
     function toggleFavorite(episodeId) {
         const newFavorites = favorites.includes(episodeId) ?
@@ -53,35 +65,34 @@ export default function Card() {
         }
     }
 
+
     function filterEpisodes(season) {
         setCurrentSeason(season);
         setCurrentPage(1);
     }
 
+
+
     useEffect(() => {
         async function fetchDataAndFilter() {
             try {
-                const response = await fetch('https://rickandmortyapi.com/api/episode');
-                const data = await response.json();
-                const totalPages = data.info.pages;
-                const allEpisodes = await Promise.all(
-                    Array.from({ length: totalPages }, (_, i) => i + 1)
-                        .map(page => fetch(`https://rickandmortyapi.com/api/episode?page=${page}`)
-                            .then(res => res.json())
-                            .then(data => data.results)
-                        )
-                );
-                const flatEpisodes = allEpisodes.flat();
-                setAllEpisodes(flatEpisodes);
+                const allEpisodesData = await fetchAllEpisodes();
+                setAllEpisodes(allEpisodesData);
+
                 const filtered = currentSeason === 'All' ?
-                    flatEpisodes :
-                    flatEpisodes.filter(episode => episode.episode.startsWith(currentSeason));
+                    allEpisodesData :
+                    allEpisodesData.filter(episode => episode.episode.startsWith(currentSeason));
+
                 const start = (currentPage - 1) * PAGE_SIZE;
                 const end = start + PAGE_SIZE;
+
                 setFilteredEpisodes(filtered.slice(start, end));
+
                 const initialButtonText = {};
                 filtered.forEach(episode => initialButtonText[episode.id] = "Show Characters");
+
                 setLoading(false);
+
             } catch (error) {
                 console.error('Une erreur est survenue :', error);
             }
@@ -90,13 +101,11 @@ export default function Card() {
         fetchDataAndFilter();
     }, [currentSeason, currentPage]);
 
+    // If data isn't fetching we return "Loading..."
+
     if (loading) {
         return <div>Loading...</div>;
     }
-
-    const totalPages = Math.ceil(
-        (currentSeason === 'All' ? allEpisodes.length : filteredEpisodes.length) / PAGE_SIZE
-    );
 
     return (
         <div className="card__container">
